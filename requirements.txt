@@ -1,0 +1,7 @@
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5
+joblib>=1.4
+pyyaml>=6.0
+
+# @''@ | Set-Content -Path requirements.txt -Encoding UTF8
