@@ -7,7 +7,7 @@
 
 **Goal:** build a reproducible, memory-efficient ML pipeline to segment Spotify tracks into clusters using audio features (danceability, energy, valence, tempo, loudness, etc.). The output is a `track_id → cluster_label` mapping and a saved pipeline artifact for inference.
 
-This repo contains the code, configuration and small utilities used during the Corizo Private Limited internship (Mar 2024 – May 2024).
+This repo contains the code, configuration and small utilities used during the Corizo Private Limited internship.
 
 ## What we built (high level)
 
