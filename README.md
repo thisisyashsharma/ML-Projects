@@ -1,25 +1,50 @@
-# Spotify Genre Segmentation — Corizo Internship
+# Spotify Genre Segmentation — Streaming Pipeline (feat/pipeline-refactor) 🚀
 
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)]()
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue)]()
+> Lightweight, production-style refactor: YAML-configured, CLI-driven pipeline that streams Spotify audio features, preprocesses them, and trains a scalable `MiniBatchKMeans` model via `partial_fit`. Outputs `data/processed/track_labels.csv` and `models/pipeline.joblib`.
 
-## Project summary
-
-**Goal:** build a reproducible, memory-efficient ML pipeline to segment Spotify tracks into clusters using audio features (danceability, energy, valence, tempo, loudness, etc.). The output is a `track_id → cluster_label` mapping and a saved pipeline artifact for inference.
-
-This repo contains the code, configuration and small utilities used during the Corizo Private Limited internship.
-
-## What we built (high level)
-
-- Chunked data ingestion and dtype downcasting to reduce memory footprint.
-- Feature preprocessing (scaling + optional PCA).
-- Scalable clustering using `MiniBatchKMeans`.
-- A simple CLI for end-to-end runs and a saved joblib artifact (`models/pipeline.joblib`).
-- Lightweight EDA notebooks (not included in this branch) and supporting scripts.
-
-## Quickstart (Windows PowerShell & cross-platform)
-
-> Clone the repository (example):
+## Quickstart (short)
 ```bash
 git clone https://github.com/thisisyashsharma/ML-Projects.git
 cd ML-Projects
+git fetch origin
+git checkout feat/pipeline-refactor
+python -m venv .venv && source .venv/bin/activate  # or PowerShell: .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m spotify_segmentation.cli --config config/default.yaml --model-out models/pipeline.joblib
+# or offline: python run_pipeline.py --config config/default.yaml --model-out models/pipeline.joblib
+```
+
+## Core ideas
+- **Reproducible:** all fields in `config/default.yaml`.  
+- **Memory-efficient:** chunked CSV reads + dtype downcasting.  
+- **Scalable:** `MiniBatchKMeans` using streaming `partial_fit`.  
+- **Dev-friendly:** CLI + `run_pipeline.py`, basic unit tests, CI workflow.
+
+## Config highlights
+Edit `config/default.yaml`:
+- `data.input_path` — CSV path  
+- `features.use_columns` — feature list  
+- `clustering.n_clusters`, `batch_size` — tuning knobs  
+- `compute.chunksize`, `downcast` — memory controls
+
+## How it runs (brief)
+1. Fit transforms on a few initial chunks (scaler ± PCA).  
+2. Stream training with `partial_fit` per chunk.  
+3. Second pass: predict labels chunk-by-chunk and save CSV + joblib artifact.
+
+## Quick tips
+- Sweep `n_clusters` (8–40) and compare silhouette.  
+- One-hot or drop `key`/`mode` for better Euclidean clustering.  
+- Use PCA (e.g., 10 components) to denoise before clustering.
+
+## Tests & CI
+- Tests: `tests/` — run with `pytest -q`.  
+- CI: GitHub Actions runs tests on push/PR.
+
+## Outputs
+- `data/processed/track_labels.csv` (track_id,label)  
+- `models/pipeline.joblib` ({kmeans, scaler, pca, config})
+
+## Contact
+Maintainer: **Yash Sharma** — https://github.com/thisisyashsharma
+

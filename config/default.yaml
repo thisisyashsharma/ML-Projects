@@ -1,0 +1,26 @@
+data:
+  input_path: "data/raw/spotifydataset.csv"
+  output_labels: "data/processed/track_labels.csv"
+  cache_dir: "data/interim"
+  use_parquet: false
+
+features:
+  use_columns: ["danceability","energy","valence","tempo","loudness",
+                "speechiness","acousticness","instrumentalness","liveness",
+                "key","mode","duration_ms"]
+  drop_na: true
+  scale: true
+  pca_components: 0
+
+clustering:
+  method: "minibatchkmeans"
+  n_clusters: 20
+  batch_size: 4096
+  max_iter: 100
+  random_state: 42
+
+compute:
+  parallel_backend: "joblib"
+  n_jobs: -1
+  chunksize: 200000
+  downcast: true
